@@ -99,3 +99,107 @@ int main()
             printf("抱歉，操作错误！");
     }
 }
+
+
+int search(struct book b[])
+{
+    int booknum,q;
+    for(;;)
+                {
+				printf("请输入你所要查找的图书编号：\n");
+					scanf_s("%d", &booknum);
+				if (booknum < 0 || booknum>20)
+				{
+					printf("error!");
+				}
+				else
+					for(q=0;q<20;q++)
+					{
+						if(q==booknum)
+						printf("编号：  书名：  状态：  ");
+						printf("%4d%4d%4d",b[q].num,b[q].name,b[q].condition);
+						return q;
+						break; 
+					}	
+					break;
+				
+}
+
+
+void borrow(struct student a,struct book b[])
+{
+	int i,num;
+	char judge;
+	switch(a.condition)
+	{
+		case 2:
+			printf("您的借阅数目已达上限！");
+				break;
+		case 1:
+		case 2:
+		{
+			for (i=a.condition;i<3;)
+			{
+            search(b[]);
+            num=search(b[]);
+			printf("您要借这本书吗？\n");
+			printf("输入“y”借阅\n");
+			scanf_s("%c",&judge);
+			if (judge=='y'&&b[num].condition==1)
+            {
+                printf("借阅成功！");
+                b[num].condition=0;
+                a.condition++;
+                i++;
+            }
+            else
+            {
+                printf("不成功！");
+			}
+		}
+		}
+		break;
+		default :
+			printf("error!");
+	}
+			printf("再见！");
+}
+void ret(struct student a,struct book b[])
+{
+    int j,num;
+    char judge;
+    switch(a.condition)
+    {
+    case 0:
+        printf("您还没有借过书哦！");
+        break;
+    case 1:
+    case 2:
+        {
+           for(j=a.condition;j>=0;)
+           {
+               search(b);
+               num=search(b[]);
+               printf("您要还这本书吗？");
+               printf("输入“y”还");
+               scanf_s("%c",&judge);
+               if(judge='y'&&b[num].condition==0)
+               {
+                   printf("成功！");
+                   j--;
+                   b[num].condition=1;
+                   a.condition--;
+               }
+               else
+               {
+                   printf("不成功！");
+               }
+           }
+        }
+    default :
+        printf("error!");
+        break;
+    }
+    printf("再见！");
+
+}
