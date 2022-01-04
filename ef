@@ -1,0 +1,399 @@
+#include <stdio.h>
+#include <string.h>
+void registers();
+void Input_login();
+void Create_File();
+
+typedef struct usermessage
+{
+    char id[10];
+    char key[20];
+    char name[20];
+    char sex;
+    long phonenumber;
+    struct BOOK *book;
+    char booknumber[10];
+    int condition;
+}users;
+
+int main()
+{
+    int a;
+    printf("***************************************************\n");
+    printf("***************************************************\n");
+    printf("欢迎来到图书馆管理系统，请输入数字进行下一步操作\n");
+    printf("1、登录 2、注册 \n");
+    printf("***************************************************\n");
+    printf("***************************************************\n");
+    scanf("%d",&a);
+    switch(a)
+    {
+        case 1:
+            Input_login();
+            break;
+        case 2:
+            registers();
+            break;
+        default:
+            printf("你的输入有误，请再次输入！\n");
+            registers();
+            break;
+
+    }
+    return 0;
+}
+
+
+
+void Create_File()  //创建用来储存用户账号密码的文件
+{
+    FILE *fp;
+    if((fp=fopen("users.txt","rb"))==NULL)
+    {
+        if((fp=fopen("users.txt","wb+"))==NULL)
+        {
+          printf("无法创立文件！\n");
+          exit(0);
+        }
+    }
+}
+
+//注册账号
+
+void registers()
+{
+    users a,b;
+    FILE *fp;
+    char temp[20];
+    printf("==================================================================================================================\n");
+    printf("************欢迎来到注册页面************\n");
+    printf("==================================================================================================================\n");
+    fp=fopen("users.txt","r");
+    fread(&b,sizeof(struct usermessage),1,fp);//读入一个结构体字符串到b
+    printf("请输入账号\n");
+    scanf("%s",&a.id);
+     while(1)
+    {
+        if(strcmp(a.id,b.id))
+        {
+        if(!feof(fp))
+            {
+                fread(&b,sizeof(struct usermessage),1,fp);
+            }
+        else
+            break;
+       }
+       else
+        {
+        printf("该用户已存在\n");
+        fclose(fp);
+        printf("是否继续注册?\n(Y/N)");
+        if(getch()=='Y') return registers();
+        else return Input_login();
+        }
+}
+
+    printf("请输入姓名：\n");
+    scanf("%s",&a.name);
+    getchar();
+    printf("请输入性别(M(男）/W（女）)：\n");
+    scanf("%c",&a.sex);
+    printf("请输入电话号码：\n");
+    scanf("%ld",&a.phonenumber);
+    printf("请输入密码：\n");
+    scanf("%s",&a.key);
+    printf("请再次输入密码：\n");
+    scanf("%s",&temp);
+
+    //两次输入密码一致性检查
+    if(strcmp(a.key,temp)!=0)
+        {
+        printf("两次密码不一致，请重新输入！\n");
+        scanf("%s",&a.key);
+        printf("请再次输入密码：\n");
+        scanf("%s",&temp);
+        }
+    else{
+        fp=fopen("users.txt","a");
+        fwrite(&a,sizeof(struct usermessage),1,fp);
+        printf("账号注册成功！\n");
+         }
+
+    return Input_login();
+
+}
+
+//登录系统
+
+void Input_login()
+{
+    #define cishu 5
+    int i=0,count=cishu;
+    users a,b;
+    FILE *fp;
+    printf("==================================================================================================================\n");
+    printf("========================================\n");
+    printf("*********** 欢迎来到登录页面！***********\n");
+    printf("=========================================\n");
+    printf("==================================================================================================================\n");
+    fp=fopen("users.txt","r");
+    fread(&b,sizeof(struct usermessage),1,fp);
+    printf("请输入账号\n");
+    scanf("%s",&a.id);
+    while(1)
+    {
+        if(strcmp(a.id,b.id)==0)
+        {
+            break;
+        }
+        else
+        {
+            if(!feof(fp))
+            {
+                fread(&b,sizeof(struct usermessage),1,fp);
+            }
+            else
+            {
+                printf("此用户不存在，请重新输入！\n");
+                fclose(fp);
+                return;
+            }
+        }
+    }
+
+    printf("请输入密码：\n");
+    scanf("%s",&a.key);
+    do{
+        if(strcmp(a.key,b.key)==0){
+            fclose(fp);
+            printf("登录成功，欢迎开始使用！\n");
+            break;
+        }
+        else{
+            printf("密码有误，请重新输入(共有 %d 次机会)\n",cishu);
+            printf("（还有 %d 次重新输入机会）\n",count);
+            scanf("%s",&a.key);
+            count--;
+            i++;
+        }
+    }while( i<cishu );
+}
+
+
+typedef struct BOOK
+{
+    int id;
+    char name[20];
+    int condition;
+} BOOK;
+BOOK book[20];
+int guanli()
+{
+    int i;
+    for(i=0;; i++)
+    {
+        book[0].condition=0;
+        book[0].id=0;
+        book[0].name==NULL;
+        int a;
+        printf("1.查询书籍\n");
+        printf("2.注册书籍\n");
+        printf("3.删除书籍\n");
+        printf("4.退出\n");
+        printf("请选择你想要执行的操作:\n");
+        scanf("%d",&a);
+        if(a==1)
+        {   int j;
+            int y;
+            int h;
+            for(j=0;; j++)
+            {
+                for(h=0; h<20; h++)
+                {
+                    if(book[h].id!=0)
+                        printf("编号:%d\n书名:%s\n库存:%d\n",book[h].id,book[h].name,book[h].condition);
+                    else
+                        continue;
+                }
+                printf("你是否要返回管理界面:1.是 2.否");
+                scanf("%d",&y);
+                if(y==1)
+                    break;
+            }
+        }
+        else if(a==2)
+        {
+            int f;
+            for(f=0;; f++)
+            {
+                int i;
+                int y;
+                for(i=0; i<50; i++)
+                {
+                    printf("请输入编号:\n");
+                    scanf("%d",&book[i].id);
+                    printf("请输入书名:\n");
+                    scanf("%s",book[i].name);
+                    printf("请输入库存量:\n");
+                    scanf("%d",&book[i].condition);
+                    printf("你是否要返回管理界面:1.是 2.否");
+                    scanf("%d",&y);
+                    if(y==1)
+                        break;
+                }
+                if(y==1)
+                    break;
+            }
+        }
+        else if(a==3)
+        {   int g;
+            for(g=0;; g++)
+            {
+                int s;
+                printf("请输入你要删除的书籍编号:\n");
+                scanf("%d",&s);
+                int i;
+                int y;
+                for(i=0; i<20; i++)
+                {
+                    if(s==book[i].id)
+                    {
+                        book[i].condition=0;
+                        book[i].id=0;
+                        book[i].name==NULL;
+                        printf("书籍已删除。");
+                    }
+                }
+                printf("你是否要返回管理界面:1.是 2.否");
+                scanf("%d",&y);
+                if(y==1)
+                    break;
+            }
+        }
+        else if(a==4)
+        {
+            printf("欢迎再次光临!");
+            break;
+        }
+        else
+            printf("抱歉，操作错误！");
+    }
+}
+
+int search()
+{
+    BOOK b[20];
+    int booknum,q;
+    for(;;)
+                {
+				printf("请输入你所要查找的图书编号：\n");
+					scanf_s("%d", &booknum);
+				if (booknum < 0 || booknum>20)
+				{
+					printf("error!");
+				}
+				else
+					for(q=0;q<20;q++)
+					{
+						if(q==booknum)
+						printf("编号：  书名：  状态：  ");
+						printf("%4d%4d%4d",b[q].id,b[q].name,b[q].condition);
+						return q;
+						break;
+					}
+					break;
+
+}
+}
+
+void borrow()
+{
+    users a;
+    BOOK b[20];
+	int i,num;
+	char judge;
+	switch(a.condition)
+	{
+		case 0:
+			printf("您的借阅数目已达上限！");
+				break;
+		case 1:
+		case 2:
+		{
+			for (i=a.condition;i<2;)
+			{
+            search();
+            num=search();
+			printf("您要借这本书吗？\n");
+			printf("输入“y”借阅\n");
+			scanf_s("%c",&judge);
+			if (judge=='y'&&b[num].condition==1)
+            {
+                printf("借阅成功！");
+                b[num].condition=0;
+                a.condition++;
+                a.book[i].id=b[num].id;
+                for(int n=0;n<20;n++)
+                {
+                    a.book[i].name[n]=b[num].name[n];
+                }
+                i++;
+                //此处要输出更改后的用户信息！
+
+            }
+            else
+            {
+                printf("不成功！");
+			}
+		}
+		}
+		break;
+		default :
+			printf("error!");
+	}
+			printf("再见！");
+}
+void ret()
+{
+    users a;
+    BOOK b[20];
+    int j,num;
+    char judge;
+    switch(a.condition)
+    {
+    case 0:
+        printf("您还没有借过书哦！");
+        break;
+    case 1:
+    case 2:
+        {
+           for(j=a.condition;j>=0;)
+           {
+               search();
+               num=search();
+               printf("您要还这本书吗？");
+               printf("输入“y”还");
+               scanf_s("%c",&judge);
+               if(judge='y'&&b[num].condition==0)
+               {
+                   printf("成功！");
+                   j--;
+                   b[num].condition=1;
+                   a.condition--;
+                   a.book[j].id=0;
+				   a.book[j].name;'NULL';
+				   //此处要输出修改后的信息！
+               }
+               else
+               {
+                   printf("不成功！");
+               }
+           }
+        }
+    default :
+        printf("error!");
+        break;
+    }
+    printf("再见！");
+
+}
